@@ -33,13 +33,13 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char **argv) {
 		return SDL_APP_FAILURE;	
 	}
 
-	vars->image_texture = load_ppm_texture("./Untitled.ppm", vars->renderer);
+	vars->window = window;
+	vars->renderer = renderer;
+
+	vars->image_texture = load_ppm_texture("./hintergrund.ppm", vars->renderer);
 	if (!vars->image_texture) {
 	        SDL_Log("Could not load image texture");
 	}
-
-	vars->window = window;
-	vars->renderer = renderer;
 
 	return SDL_APP_CONTINUE;
 }
@@ -73,11 +73,13 @@ SDL_AppResult SDL_AppIterate(void *appstate) {
 
 	if (vars->image_texture) {
         	float w = 0, h = 0;
+		float scale = 1.0f;
+
 	        SDL_GetTextureSize(vars->image_texture, &w, &h);
         
-	        SDL_FRect dst_rect = { .x = 0, .y = 0, .w = w, .h = h };
+	        SDL_FRect dst_rect = { .x = 0, .y = 0, .w = w * scale, .h = h * scale };
 	        SDL_RenderTexture(vars->renderer, vars->image_texture, NULL, &dst_rect);
-    }
+	}
 	
 	SDL_RenderPresent(vars->renderer);
 

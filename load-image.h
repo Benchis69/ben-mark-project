@@ -1,6 +1,6 @@
-#ifndef LOAD-IMAGE_H
-#define LOAD-IMAGE_H
+#ifndef LOAD_IMAGE_H
+#define LOAD_IMAGE_H
 
-SDL_Texture* load_ppm_texture(const char *file_path, SDL_Renderer *renderer) {
+SDL_Texture* load_ppm_texture(const char *file_path, SDL_Renderer *renderer);
 
 #endif
