@@ -5,9 +5,13 @@
 #include <SDL3/SDL.h>
 #include <SDL3/SDL_main.h>
 
+#include "./load-image.h"
+
+
 typedef struct {
 	SDL_Window *window;
 	SDL_Renderer *renderer;
+	SDL_Texture *image_texture;
 } Variables;
 
 SDL_AppResult SDL_AppInit(void **appstate, int argc, char **argv) {
@@ -27,6 +31,11 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char **argv) {
 	if(!SDL_CreateWindowAndRenderer("2d Game", 1600, 900, SDL_WINDOW_RESIZABLE, &window, &renderer)) {
 		SDL_Log("Could not create window and renderer: %s\n", SDL_GetError());
 		return SDL_APP_FAILURE;	
+	}
+
+	vars->image_texture = load_ppm_texture("./Untitled.ppm", vars->renderer);
+	if (!vars->image_texture) {
+	        SDL_Log("Could not load image texture");
 	}
 
 	vars->window = window;
@@ -52,6 +61,24 @@ SDL_AppResult SDL_AppIterate(void *appstate) {
 	
 	SDL_SetRenderDrawColor(vars->renderer, 30, 30, 30, 255);
 	SDL_RenderClear(vars->renderer);
+
+	SDL_FRect rectangle = {
+		.x = 100,
+		.y = 100,
+		.w = 100,
+		.h = 100
+	};
+	SDL_SetRenderDrawColor(vars->renderer, 100, 100, 100, 255);
+	SDL_RenderFillRect(vars->renderer, &rectangle);
+
+	if (vars->image_texture) {
+        	float w = 0, h = 0;
+	        SDL_GetTextureSize(vars->image_texture, &w, &h);
+        
+	        SDL_FRect dst_rect = { .x = 0, .y = 0, .w = w, .h = h };
+	        SDL_RenderTexture(vars->renderer, vars->image_texture, NULL, &dst_rect);
+    }
+	
 	SDL_RenderPresent(vars->renderer);
 
 	return SDL_APP_CONTINUE;
@@ -62,6 +89,9 @@ void SDL_AppQuit(void *appstate, SDL_AppResult result) {
 	Variables *vars = (Variables *) appstate;
 	
 	if (vars) {
+		if (vars->image_texture) {
+			SDL_DestroyTexture(vars->image_texture);
+		}
 		free(vars);
 	}
 }
