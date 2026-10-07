@@ -36,7 +36,7 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char **argv) {
 	vars->window = window;
 	vars->renderer = renderer;
 
-	vars->image_texture = load_ppm_texture("./images/hintergrund.ppm", vars->renderer);
+	vars->image_texture = load_ppm_texture("./images/zelda.ppm", vars->renderer);
 	if (!vars->image_texture) {
 	        SDL_Log("Could not load image texture");
 	}
