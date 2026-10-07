@@ -1,6 +1,7 @@
 #ifndef START_SCREEN_H_
 #define START_SCREEN_H_
 #include <SDL3/SDL.h>
+#include <stdlib.h>
 
 typedef struct {
 	float x;
@@ -17,6 +18,6 @@ typedef struct {
 	Button quit_button;
 } Start_Screen;
 
-void load_start_screen(SDL_Renderer *renderer);
+bool load_start_screen(SDL_Renderer *renderer);
 
 #endif
