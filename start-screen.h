@@ -9,7 +9,13 @@ typedef struct {
 	float h;
 	
 	SDL_Color color;
-} button;
+} Button;
+
+typedef struct {
+	Button start_button;
+	Button load_button;
+	Button quit_button;
+} Start_Screen;
 
 void load_start_screen(SDL_Renderer *renderer);
 

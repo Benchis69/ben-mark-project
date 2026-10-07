@@ -13,6 +13,7 @@ typedef struct {
 	SDL_Window *window;
 	SDL_Renderer *renderer;
 	SDL_Texture *image_texture;
+	Start_Screen *start_screen;
 } Variables;
 
 SDL_AppResult SDL_AppInit(void **appstate, int argc, char **argv) {
