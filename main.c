@@ -6,6 +6,7 @@
 #include <SDL3/SDL_main.h>
 
 #include "./load-image.h"
+#include "./start-screen.h"
 
 
 typedef struct {
@@ -36,10 +37,10 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char **argv) {
 	vars->window = window;
 	vars->renderer = renderer;
 
-	vars->image_texture = load_ppm_texture("./images/zelda.ppm", vars->renderer);
+	/*vars->image_texture = load_ppm_texture("./images/zelda.ppm", vars->renderer);
 	if (!vars->image_texture) {
 	        SDL_Log("Could not load image texture");
-	}
+	}*/
 
 	return SDL_APP_CONTINUE;
 }
@@ -70,16 +71,8 @@ SDL_AppResult SDL_AppIterate(void *appstate) {
 	};
 	SDL_SetRenderDrawColor(vars->renderer, 100, 100, 100, 255);
 	SDL_RenderFillRect(vars->renderer, &rectangle);
-
-	if (vars->image_texture) {
-        	float w = 0, h = 0;
-		float scale = 1.0f;
-
-	        SDL_GetTextureSize(vars->image_texture, &w, &h);
-        
-	        SDL_FRect dst_rect = { .x = 0, .y = 0, .w = w * scale, .h = h * scale };
-	        SDL_RenderTexture(vars->renderer, vars->image_texture, NULL, &dst_rect);
-	}
+	
+	load_start_screen(vars->renderer);
 	
 	SDL_RenderPresent(vars->renderer);
 
