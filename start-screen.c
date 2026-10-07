@@ -23,9 +23,10 @@ bool load_start_screen(SDL_Window *window, SDL_Renderer *renderer, TTF_Font *fon
 	// 2. Draw three buttons (start, load, quit)
 
 
-	SDL_GetWindowSize(window, (int) &w, (int) &h);
-	start_screen->start_button = (Button) {.x = , .y = h/3, };
-
+	SDL_GetWindowSize(window, (int*) &w, (int*) &h);
+	start_screen->start_button = (Button) {.x = (6 * w) / 16, .y = h/3, .w = w/8, .h = 80};
+	SDL_FRect start_rect = {.x = start_screen->start_button.x, .y = start_screen->start_button.y, .w = start_screen->start_button.w, .h = start_screen->start_button.h};
+	SDL_RenderFillRect(renderer, &start_rect);
 
 	// 2.1 Hover over mechanic 
 	// 2.2 Make buttons clickable

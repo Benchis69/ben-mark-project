@@ -73,7 +73,7 @@ SDL_AppResult SDL_AppIterate(void *appstate) {
 	SDL_SetRenderDrawColor(vars->renderer, 100, 100, 100, 255);
 	SDL_RenderFillRect(vars->renderer, &rectangle);
 	
-	load_start_screen(vars->renderer);
+	load_start_screen(vars->window, vars->renderer, NULL, vars->start_screen);
 	
 	SDL_RenderPresent(vars->renderer);
 
