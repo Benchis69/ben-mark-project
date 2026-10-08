@@ -12,6 +12,8 @@ typedef struct {
 	float h;
 	
 	SDL_Color color;
+
+	char *text;
 } Button;
 
 typedef struct {
