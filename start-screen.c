@@ -14,7 +14,7 @@ static void render_text(SDL_Renderer *renderer, TTF_Font *font, const char *text
 	// Convert surface to texture
 	SDL_Texture *texture = SDL_CreateTextureFromSurface(renderer, surface);
 
-	SDL_FRect dstRect = {.x = x, .y = y, .w = (float) surface->w * scale, .h = (float) surface->h * scale};
+	SDL_FRect dstRect = {x, y, (float) surface->w * scale, (float) surface->h * scale};
 
 	SDL_RenderTexture(renderer, texture, NULL, &dstRect);
 
@@ -25,16 +25,13 @@ static void render_text(SDL_Renderer *renderer, TTF_Font *font, const char *text
 
 static void render_button(SDL_Renderer *renderer, Button button, TTF_Font *font, SDL_Color text_color) {
 	
-	SDL_FRect rect = {
-		.x = button.x,
-		.y = button.y,
-		.w = button.w,
-		.h = button.h
-	};
+	SDL_FRect rect = {button.x, button.y, button.w, button.h};
+	int text_w, text_h;
+	TTF_GetStringSize(font, button.text, sizeof(button.text), &text_w, &text_h);
 
 	SDL_SetRenderDrawColor(renderer, button.color.r, button.color.g, button.color.b, button.color.a);
 	SDL_RenderFillRect(renderer, &rect);
-	render_text(renderer, font, button.text, button.x + 3*button.w/8, button.y + button.h/3, text_color, 1.0f);
+	render_text(renderer, font, button.text, button.x + (button.w - text_w) / 2, button.y + (button.h - text_h) / 2, text_color, 1.0f);
 }
 
 bool load_start_screen(SDL_Window *window, SDL_Renderer *renderer, TTF_Font *font, Start_Screen *start_screen) {
@@ -60,11 +57,13 @@ bool load_start_screen(SDL_Window *window, SDL_Renderer *renderer, TTF_Font *fon
 		int sw, sh;
 		SDL_GetWindowSize(window, &sw, &sh);
 
-		SDL_Color button_color = {.r = 255, .g = 255, .b = 255, .a = 255};		
-		SDL_Color text_color = {.r = 0, .g = 0, .b = 0, .a = 255};		
+		SDL_Color button_color = {255, 255, 255, 255};		
+		SDL_Color text_color = {0, 0, 0, 255};		
 
 		start_screen->start_button = (Button) {.x = 3*sw/8, .y = sh/3, .w = sw/4, .h = 80, .color = button_color, .text = "Start"};
 		render_button(renderer, start_screen->start_button, font, text_color);
+		start_screen->load_button = (Button) {.x = 3*sw/8, .y = sh/5, .w = sw/4, .h = 80, .color = button_color, .text = "Load"};
+		render_button(renderer, start_screen->load_button, font, text_color);
 	}
 
 	// 2.1 Hover over mechanic 
@@ -72,3 +71,5 @@ bool load_start_screen(SDL_Window *window, SDL_Renderer *renderer, TTF_Font *fon
 	// 2.3 Add button function
 	return true;
 }
+
+

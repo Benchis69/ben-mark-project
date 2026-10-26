@@ -74,6 +74,8 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char **argv) {
 	vars->start_screen = (Start_Screen) {0};
 	if(!load_font_from_file(vars, "./fonts/Roboto_Mono/RobotoMono-VariableFont_wght.ttf", 20)) return SDL_APP_FAILURE;
 
+	SDL_SetRenderLogicalPresentation(renderer, 1600, 900, SDL_LOGICAL_PRESENTATION_LETTERBOX);
+
 	return SDL_APP_CONTINUE;
 }
 
