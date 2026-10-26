@@ -4,8 +4,6 @@
 #include "load-image.h"
 #include <stdlib.h>
 
-<<<<<<< HEAD
-=======
 static void render_text(SDL_Renderer *renderer, TTF_Font *font, const char *text, float x, float y, SDL_Color color, float scale) {
 	
 	if (text == NULL || text[0] == '\0') return;
@@ -36,7 +34,6 @@ static void render_button(SDL_Renderer *renderer, Button button, TTF_Font *font,
 	render_text(renderer, font, button.text, button.x + (button.w - text_w) / 2, button.y + (button.h - text_h) / 2, text_color, 1.0f);
 }
 
->>>>>>> ab188c4d9bd7488d97e08ed1a44c86ababad9118
 bool load_start_screen(SDL_Window *window, SDL_Renderer *renderer, TTF_Font *font, Start_Screen *start_screen) {
 
 	// 1. Load background image
@@ -55,22 +52,18 @@ bool load_start_screen(SDL_Window *window, SDL_Renderer *renderer, TTF_Font *fon
 
 	// 2. Draw three buttons (start, load, quit)
 
+	int sw, sh;
+	SDL_GetWindowSize(window,  &sw, &sh);
 
-<<<<<<< HEAD
-	SDL_GetWindowSize(window, (int*) &w, (int*) &h);
-	start_screen->start_button = (Button) {.x = (6 * w) / 16, .y = h/3, .w = w/8, .h = 80};
-	SDL_FRect start_rect = {.x = start_screen->start_button.x, .y = start_screen->start_button.y, .w = start_screen->start_button.w, .h = start_screen->start_button.h};
-	SDL_RenderFillRect(renderer, &start_rect);
-=======
-		SDL_Color button_color = {255, 255, 255, 255};		
-		SDL_Color text_color = {0, 0, 0, 255};		
+	SDL_Color button_color = {255, 255, 255, 255};		
+	SDL_Color text_color = {0, 0, 0, 255};		
 
-		start_screen->start_button = (Button) {.x = 3*sw/8, .y = sh/3, .w = sw/4, .h = 80, .color = button_color, .text = "Start"};
-		render_button(renderer, start_screen->start_button, font, text_color);
-		start_screen->load_button = (Button) {.x = 3*sw/8, .y = sh/5, .w = sw/4, .h = 80, .color = button_color, .text = "Load"};
-		render_button(renderer, start_screen->load_button, font, text_color);
-	}
->>>>>>> ab188c4d9bd7488d97e08ed1a44c86ababad9118
+	start_screen->start_button = (Button) {.x = 3*sw/8, .y = sh/3, .w = sw/4, .h = 80, .color = button_color, .text = "Start"};
+	render_button(renderer, start_screen->start_button, font, text_color);
+
+	start_screen->load_button = (Button) {.x = 3*sw/8, .y = sh/5, .w = sw/4, .h = 80, .color = button_color, .text = "Load"};
+	render_button(renderer, start_screen->load_button, font, text_color);
+	
 
 	// 2.1 Hover over mechanic 
 	// 2.2 Make buttons clickable
