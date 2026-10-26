@@ -21,6 +21,8 @@ typedef struct {
 	Start_Screen start_screen;
 
 	Font font;
+	bool left_click;
+
 } Variables;
 
 bool load_font_from_file(void *appstate, char *file_path, int size) {
@@ -68,7 +70,7 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char **argv) {
 		SDL_Log("Could not create window and renderer: %s\n", SDL_GetError());
 		return SDL_APP_FAILURE;	
 	}
-
+	vars->left_click = false;
 	vars->window = window;
 	vars->renderer = renderer;
 	vars->start_screen = (Start_Screen) {0};
@@ -76,15 +78,24 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char **argv) {
 
 	SDL_SetRenderLogicalPresentation(renderer, 1600, 900, SDL_LOGICAL_PRESENTATION_LETTERBOX);
 
+	SDL_SetRenderVSync(renderer, 1);
+
 	return SDL_APP_CONTINUE;
 }
 
 SDL_AppResult SDL_AppEvent(void *appstate, SDL_Event *event) {
 
+	Variables *vars	= (Variables *) appstate;
+
 	switch(event->type) {
 
 		case SDL_EVENT_QUIT: {
 			return SDL_APP_SUCCESS;
+		} break;
+		case SDL_EVENT_MOUSE_BUTTON_DOWN: {
+			if (event->button.button == SDL_BUTTON_LEFT){
+				vars->left_click = true;
+			}
 		} break;
 	}
 	return SDL_APP_CONTINUE;
@@ -97,7 +108,9 @@ SDL_AppResult SDL_AppIterate(void *appstate) {
 	SDL_SetRenderDrawColor(vars->renderer, 30, 30, 30, 255);
 	SDL_RenderClear(vars->renderer);
 
-	load_start_screen(vars->window, vars->renderer, vars->font.font, &vars->start_screen);
+	Screen_State screen_state = load_start_screen(vars->window, vars->renderer, vars->font.font, &vars->start_screen, vars->left_click);
+
+	if (screen_state == QUIT) return SDL_APP_SUCCESS;
 
 	SDL_RenderPresent(vars->renderer);
 
@@ -109,6 +122,7 @@ void SDL_AppQuit(void *appstate, SDL_AppResult result) {
 	Variables *vars = (Variables *) appstate;
 
 	if (vars) {
+		free_start_screen(&vars->start_screen);
 		free(vars);
 	}
 }

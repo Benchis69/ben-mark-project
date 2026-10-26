@@ -23,7 +23,7 @@ static void render_text(SDL_Renderer *renderer, TTF_Font *font, const char *text
 	SDL_DestroyTexture(texture);
 }
 
-static void render_button(SDL_Renderer *renderer, Button button, TTF_Font *font, SDL_Color text_color) {
+static void render_button(SDL_Renderer *renderer, Button button, TTF_Font *font) {
 	
 	SDL_FRect rect = {button.x, button.y, button.w, button.h};
 	int text_w, text_h;
@@ -31,44 +31,91 @@ static void render_button(SDL_Renderer *renderer, Button button, TTF_Font *font,
 
 	SDL_SetRenderDrawColor(renderer, button.color.r, button.color.g, button.color.b, button.color.a);
 	SDL_RenderFillRect(renderer, &rect);
-	render_text(renderer, font, button.text, button.x + (button.w - text_w) / 2, button.y + (button.h - text_h) / 2, text_color, 1.0f);
+	render_text(renderer, font, button.text, button.x + (button.w - text_w) / 2, button.y + (button.h - text_h) / 2, button.text_color, 1.0f);
 }
 
-bool load_start_screen(SDL_Window *window, SDL_Renderer *renderer, TTF_Font *font, Start_Screen *start_screen) {
 
-	// 1. Load background image
+// check if mouse is on button
 
-	SDL_Texture *background = load_ppm_texture("./images/background.ppm", renderer);
-	if (!background) {
-		SDL_Log("Could not load background image!");
-		return false;
+static bool checkMouse(float x, float y, float w, float h){
+	float mouse_x;
+	float mouse_y;
+	SDL_GetMouseState(&mouse_x, &mouse_y);
+
+	if ((mouse_x >= x && mouse_x <= x + w)&&(mouse_y >= y && mouse_y <= y + h)) return true;
+	return false;
+}
+
+
+
+Screen_State load_start_screen(SDL_Window *window, SDL_Renderer *renderer, TTF_Font *font, Start_Screen *start_screen, bool left_click) {
+
+	// 1. Load background image (only once, the texture is kept in start_screen)
+
+	if (!start_screen->background) {
+		start_screen->background = load_ppm_texture("./images/background.ppm", renderer);
+		if (!start_screen->background) {
+			SDL_Log("Could not load background image!");
+			return false;
+		}
 	}
 	float w = 0, h = 0;
 
-	SDL_GetTextureSize(background, &w, &h);
-	
+	SDL_GetTextureSize(start_screen->background, &w, &h);
+
 	SDL_FRect bck_rect = { .x = 0, .y = 0, .w = w, .h = h};
-	SDL_RenderTexture(renderer, background, NULL, &bck_rect);
+	SDL_RenderTexture(renderer, start_screen->background, NULL, &bck_rect);
 
 	// 2. Draw three buttons (start, load, quit)
 
 	int sw, sh;
 	SDL_GetWindowSize(window,  &sw, &sh);
 
-	SDL_Color button_color = {255, 255, 255, 255};		
+	SDL_Color button_color = {255, 255, 255, 255};
+	SDL_Color button_hover_color = {0, 0, 0, 255};
+	SDL_Color text_hover_color = {255, 255, 255, 255};		
 	SDL_Color text_color = {0, 0, 0, 255};		
 
-	start_screen->start_button = (Button) {.x = 3*sw/8, .y = sh/3, .w = sw/4, .h = 80, .color = button_color, .text = "Start"};
-	render_button(renderer, start_screen->start_button, font, text_color);
-
-	start_screen->load_button = (Button) {.x = 3*sw/8, .y = sh/5, .w = sw/4, .h = 80, .color = button_color, .text = "Load"};
-	render_button(renderer, start_screen->load_button, font, text_color);
+	start_screen->start_button = (Button) {.x = 3*sw/8, .y = sh/5, .w = sw/4, .h = sh/9, .color = button_color, .text_color = text_color, .text = " Start"};
 	
+	if (checkMouse(start_screen->start_button.x, start_screen->start_button.y, start_screen->start_button.w, start_screen->start_button.h)){
+		start_screen->start_button.color = button_hover_color;
+		start_screen->start_button.text_color = text_hover_color;
+		if (left_click) return START;
+	}
 
-	// 2.1 Hover over mechanic 
-	// 2.2 Make buttons clickable
+	render_button(renderer, start_screen->start_button, font);
+	
+	start_screen->load_button = (Button) {.x = 3*sw/8, .y = 2*sh/5, .w = sw/4, .h = sh/9, .color = button_color, .text_color = text_color, .text = " Load"};
+	
+	if (checkMouse(start_screen->load_button.x, start_screen->load_button.y, start_screen->load_button.w, start_screen->load_button.h)){
+		start_screen->load_button.color = button_hover_color;
+		start_screen->load_button.text_color = text_hover_color;
+		if (left_click) return LOAD;
+	}
+	
+	render_button(renderer, start_screen->load_button, font);
+	
+	start_screen->quit_button = (Button) {.x = 3*sw/8, .y = 3*sh/5, .w = sw/4, .h = sh/9, .color = button_color, .text_color = text_color, .text = " Quit"};
+	
+	if (checkMouse(start_screen->quit_button.x, start_screen->quit_button.y, start_screen->quit_button.w, start_screen->quit_button.h)){
+		start_screen->quit_button.color = button_hover_color;
+		start_screen->quit_button.text_color = text_hover_color;
+		if (left_click) return QUIT;
+	}
+	
+	render_button(renderer, start_screen->quit_button, font);
+
+
 	// 2.3 Add button function
-	return true;
+}
+
+void free_start_screen(Start_Screen *start_screen) {
+
+	if (start_screen->background) {
+		SDL_DestroyTexture(start_screen->background);
+		start_screen->background = NULL;
+	}
 }
 
 

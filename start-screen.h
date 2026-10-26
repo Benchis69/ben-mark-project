@@ -12,6 +12,7 @@ typedef struct {
 	float h;
 	
 	SDL_Color color;
+	SDL_Color text_color;
 
 	char *text;
 } Button;
@@ -20,9 +21,17 @@ typedef struct {
 	Button start_button;
 	Button load_button;
 	Button quit_button;
+	SDL_Texture *background;
 } Start_Screen;
 
-bool load_start_screen(SDL_Window *window, SDL_Renderer *renderer, TTF_Font *font, Start_Screen *start_screen);
+typedef enum {
+	START,
+	LOAD,
+	QUIT
+}Screen_State;
+
+Screen_State load_start_screen(SDL_Window *window, SDL_Renderer *renderer, TTF_Font *font, Start_Screen *start_screen, bool left_click);
+void free_start_screen(Start_Screen *start_screen);
 
 
 #endif
