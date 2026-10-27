@@ -25,13 +25,15 @@ typedef struct {
 } Start_Screen;
 
 typedef enum {
+	PLAY,
 	START,
-	LOAD,
-	QUIT
+	SETTINGS,
+	QUIT,
+	ERROR
 }Screen_State;
 
 Screen_State load_start_screen(SDL_Window *window, SDL_Renderer *renderer, TTF_Font *font, Start_Screen *start_screen, bool *left_click);
 void free_start_screen(Start_Screen *start_screen);
-
+void render_button(SDL_Renderer *renderer, Button button, TTF_Font *font);
 
 #endif
