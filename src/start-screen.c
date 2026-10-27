@@ -23,7 +23,7 @@ static void render_text(SDL_Renderer *renderer, TTF_Font *font, const char *text
 	SDL_DestroyTexture(texture);
 }
 
-static void render_button(SDL_Renderer *renderer, Button button, TTF_Font *font) {
+void render_button(SDL_Renderer *renderer, Button button, TTF_Font *font) {
 	
 	SDL_FRect rect = {button.x, button.y, button.w, button.h};
 	int text_w, text_h;
@@ -54,7 +54,7 @@ Screen_State load_start_screen(SDL_Window *window, SDL_Renderer *renderer, TTF_F
 		start_screen->background = load_ppm_texture("./images/background.ppm", renderer);
 		if (!start_screen->background) {
 			SDL_Log("Could not load background image!");
-			return false;
+			return ERROR;
 		}
 	}
 	float w = 0, h = 0;

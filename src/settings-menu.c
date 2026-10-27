@@ -1,6 +1,9 @@
-#include "load-menu.h"
+#include "settings-menu.h"
+#include "start-screen.h"
 
 #include <SDL/SDL.h>
 #include <stdlib.h>
 
-void 
+void load_settings_menu() {
+	
+} 

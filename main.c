@@ -15,6 +15,12 @@ typedef struct {
 } Font;
 
 typedef struct {
+	Uint8 *wav_data;
+	Uint32 wav_data_len;
+	char *file_path;
+} Music;
+
+typedef struct {
 	SDL_Window *window;
 	SDL_Renderer *renderer;
 
@@ -23,6 +29,10 @@ typedef struct {
 	Font font;
 	bool left_click;
 	bool right_click;
+
+	SDL_AudioStream *stream;
+
+	Music start_screen_music;
 
 } Variables;
 
@@ -48,9 +58,25 @@ bool load_font_from_file(void *appstate, char *file_path, int size) {
 	return true;
 }
 
+bool init_music(void *appstate, char *file_path, SDL_AudioSpec spec) {
+	
+	Variables *vars = (Variables *) appstate;
+	
+	Music music = {NULL, 0, file_path};
+	if (!SDL_LoadWAV(file_path, &spec, &music.wav_data, &music.wav_data_len)) {
+		SDL_Log("Could not load wav file: %s \n", SDL_GetError());
+		return false;
+	}
+
+	vars->start_screen_music = music;
+	return true;
+}
+
 SDL_AppResult SDL_AppInit(void **appstate, int argc, char **argv) {
 
-	if (!SDL_Init(SDL_INIT_VIDEO)) {
+	SDL_AudioSpec spec =  {SDL_AUDIO_S16, 2, 44100};
+
+	if (!SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO)) {
 		SDL_Log("Could not initialize SDL: %s\n", SDL_GetError());
 		return SDL_APP_FAILURE;
 	}
@@ -64,19 +90,33 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char **argv) {
 	SDL_Renderer *renderer = NULL;
 
 	Variables *vars = malloc(sizeof(Variables));
-	if(!vars) return SDL_APP_FAILURE;
+	if (!vars) return SDL_APP_FAILURE;
 	*appstate = vars;
 
-	if(!SDL_CreateWindowAndRenderer("2d Game", 1600, 900, SDL_WINDOW_RESIZABLE, &window, &renderer)) {
+	if (!SDL_CreateWindowAndRenderer("2d Game", 1600, 900, SDL_WINDOW_RESIZABLE, &window, &renderer)) {
 		SDL_Log("Could not create window and renderer: %s\n", SDL_GetError());
 		return SDL_APP_FAILURE;	
 	}
-	vars->left_click = false;
-	vars->right_click = false;
+
+	// Initialization of variables
 	vars->window = window;
 	vars->renderer = renderer;
+
 	vars->start_screen = (Start_Screen) {0};
-	if(!load_font_from_file(vars, "./fonts/Roboto_Mono/RobotoMono-VariableFont_wght.ttf", 20)) return SDL_APP_FAILURE;
+
+	if (!load_font_from_file(vars, "./fonts/Roboto_Mono/RobotoMono-VariableFont_wght.ttf", 20)) return SDL_APP_FAILURE;
+
+	vars->left_click = false;
+	vars->right_click = false;
+
+	if(!init_music(vars, "./music/start_screen_music.wav", spec)) return SDL_APP_FAILURE; 
+	vars->stream = SDL_OpenAudioDeviceStream(SDL_AUDIO_DEVICE_DEFAULT_PLAYBACK, &spec, NULL, NULL);
+	if (!vars->stream) {
+		SDL_Log("Could not create audio stream: %s", SDL_GetError());
+		return SDL_APP_FAILURE;
+	}
+
+	SDL_ResumeAudioStreamDevice(vars->stream);
 
 	SDL_SetRenderLogicalPresentation(renderer, 1600, 900, SDL_LOGICAL_PRESENTATION_LETTERBOX);
 
@@ -110,6 +150,11 @@ SDL_AppResult SDL_AppEvent(void *appstate, SDL_Event *event) {
 SDL_AppResult SDL_AppIterate(void *appstate) {
 
 	Variables *vars	= (Variables *) appstate;
+	
+	if (SDL_GetAudioStreamQueued(vars->stream) < (int)vars->start_screen_music.wav_data_len) {
+	        // feed more data to the stream. It will queue at the end, and trickle out as the hardware needs more data.
+		SDL_PutAudioStreamData(vars->stream, vars->start_screen_music.wav_data, vars->start_screen_music.wav_data_len);
+	}
 
 	SDL_SetRenderDrawColor(vars->renderer, 30, 30, 30, 255);
 	SDL_RenderClear(vars->renderer);
