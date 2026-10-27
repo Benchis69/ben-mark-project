@@ -113,7 +113,7 @@ SDL_AppResult SDL_AppIterate(void *appstate) {
 	SDL_SetRenderDrawColor(vars->renderer, 30, 30, 30, 255);
 	SDL_RenderClear(vars->renderer);
 
-	Screen_State screen_state = load_start_screen(vars->window, vars->renderer, vars->font.font, &vars->start_screen, vars->left_click);
+	Screen_State screen_state = load_start_screen(vars->window, vars->renderer, vars->font.font, &vars->start_screen, &vars->left_click);
 
 	if (screen_state == QUIT) return SDL_APP_SUCCESS;
 
