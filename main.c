@@ -5,8 +5,8 @@
 #include <SDL3/SDL.h>
 #include <SDL3/SDL_main.h>
 
-#include "./load-image.h"
-#include "./start-screen.h"
+#include "./src/load-image.h"
+#include "./src/start-screen.h"
 
 typedef struct {
 	TTF_Font *font;
