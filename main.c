@@ -22,6 +22,7 @@ typedef struct {
 
 	Font font;
 	bool left_click;
+	bool right_click;
 
 } Variables;
 
@@ -71,6 +72,7 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char **argv) {
 		return SDL_APP_FAILURE;	
 	}
 	vars->left_click = false;
+	vars->right_click = false;
 	vars->window = window;
 	vars->renderer = renderer;
 	vars->start_screen = (Start_Screen) {0};
@@ -95,6 +97,9 @@ SDL_AppResult SDL_AppEvent(void *appstate, SDL_Event *event) {
 		case SDL_EVENT_MOUSE_BUTTON_DOWN: {
 			if (event->button.button == SDL_BUTTON_LEFT){
 				vars->left_click = true;
+			}
+			else if (event->button.button == SDL_BUTTON_RIGHT){
+				vars->right_click = true;
 			}
 		} break;
 	}
