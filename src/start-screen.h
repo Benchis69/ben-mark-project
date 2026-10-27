@@ -25,8 +25,8 @@ typedef struct {
 } Start_Screen;
 
 typedef enum {
-	PLAY,
 	START,
+	PLAY,
 	SETTINGS,
 	QUIT,
 	ERROR

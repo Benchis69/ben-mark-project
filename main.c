@@ -7,6 +7,8 @@
 
 #include "./src/load-image.h"
 #include "./src/start-screen.h"
+#include "./src/load-menu.h"
+
 
 typedef struct {
 	TTF_Font *font;
@@ -25,6 +27,7 @@ typedef struct {
 	SDL_Renderer *renderer;
 
 	Start_Screen start_screen;
+	Load_Menu load_menu;
 
 	Font font;
 	bool left_click;
@@ -33,6 +36,7 @@ typedef struct {
 	SDL_AudioStream *stream;
 
 	Music start_screen_music;
+	Screen_State screen_state;
 
 } Variables;
 
@@ -103,6 +107,8 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char **argv) {
 	vars->renderer = renderer;
 
 	vars->start_screen = (Start_Screen) {0};
+	vars->load_menu = (Load_Menu) {0};
+	vars->screen_state = START;
 
 	if (!load_font_from_file(vars, "./fonts/Roboto_Mono/RobotoMono-VariableFont_wght.ttf", 20)) return SDL_APP_FAILURE;
 
@@ -159,9 +165,21 @@ SDL_AppResult SDL_AppIterate(void *appstate) {
 	SDL_SetRenderDrawColor(vars->renderer, 30, 30, 30, 255);
 	SDL_RenderClear(vars->renderer);
 
-	Screen_State screen_state = load_start_screen(vars->window, vars->renderer, vars->font.font, &vars->start_screen, &vars->left_click);
 
-	if (screen_state == QUIT) return SDL_APP_SUCCESS;
+	switch (vars->screen_state) {
+		case START: {
+			vars->screen_state = load_start_screen(vars->window, vars->renderer, vars->font.font, &vars->start_screen, &vars->left_click);
+		} break;
+		case PLAY: {
+			vars->screen_state = loadLoadMenu(vars->renderer, vars->window, &vars->load_menu, vars->font.font);
+		} break;
+		case SETTINGS: {
+			//TODO
+		} break;
+		case QUIT: {
+			return SDL_APP_SUCCESS;
+		} break;
+	}
 
 	SDL_RenderPresent(vars->renderer);
 
@@ -174,6 +192,16 @@ void SDL_AppQuit(void *appstate, SDL_AppResult result) {
 
 	if (vars) {
 		free_start_screen(&vars->start_screen);
+		free_load_menu(&vars->load_menu);
 		free(vars);
 	}
 }
+
+
+
+
+
+
+
+
+

@@ -79,7 +79,10 @@ Screen_State load_start_screen(SDL_Window *window, SDL_Renderer *renderer, TTF_F
 	if (checkMouse(start_screen->play_button.x, start_screen->play_button.y, start_screen->play_button.w, start_screen->play_button.h)){
 		start_screen->play_button.color = button_hover_color;
 		start_screen->play_button.text_color = text_hover_color;
-		if (left_click) return START;
+		if (*left_click) {
+			*left_click = false;
+			return PLAY;
+		}
 	}
 
 	render_button(renderer, start_screen->play_button, font);
@@ -89,7 +92,10 @@ Screen_State load_start_screen(SDL_Window *window, SDL_Renderer *renderer, TTF_F
 	if (checkMouse(start_screen->settings_button.x, start_screen->settings_button.y, start_screen->settings_button.w, start_screen->settings_button.h)){
 		start_screen->settings_button.color = button_hover_color;
 		start_screen->settings_button.text_color = text_hover_color;
-		if (left_click) return SETTINGS;
+		if (*left_click) {
+			*left_click = false;
+			return SETTINGS;
+		}
 	}
 	
 	render_button(renderer, start_screen->settings_button, font);
