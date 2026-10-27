@@ -74,25 +74,25 @@ Screen_State load_start_screen(SDL_Window *window, SDL_Renderer *renderer, TTF_F
 	SDL_Color text_hover_color = {255, 255, 255, 255};		
 	SDL_Color text_color = {0, 0, 0, 255};		
 
-	start_screen->start_button = (Button) {.x = 3*sw/8, .y = sh/5, .w = sw/4, .h = sh/9, .color = button_color, .text_color = text_color, .text = " Start"};
+	start_screen->play_button = (Button) {.x = 3*sw/8, .y = sh/5, .w = sw/4, .h = sh/9, .color = button_color, .text_color = text_color, .text = " Play"};
 	
-	if (checkMouse(start_screen->start_button.x, start_screen->start_button.y, start_screen->start_button.w, start_screen->start_button.h)){
-		start_screen->start_button.color = button_hover_color;
-		start_screen->start_button.text_color = text_hover_color;
+	if (checkMouse(start_screen->play_button.x, start_screen->play_button.y, start_screen->play_button.w, start_screen->play_button.h)){
+		start_screen->play_button.color = button_hover_color;
+		start_screen->play_button.text_color = text_hover_color;
 		if (left_click) return START;
 	}
 
-	render_button(renderer, start_screen->start_button, font);
+	render_button(renderer, start_screen->play_button, font);
 	
-	start_screen->load_button = (Button) {.x = 3*sw/8, .y = 2*sh/5, .w = sw/4, .h = sh/9, .color = button_color, .text_color = text_color, .text = " Load"};
+	start_screen->settings_button = (Button) {.x = 3*sw/8, .y = 2*sh/5, .w = sw/4, .h = sh/9, .color = button_color, .text_color = text_color, .text = "Settings"};
 	
-	if (checkMouse(start_screen->load_button.x, start_screen->load_button.y, start_screen->load_button.w, start_screen->load_button.h)){
-		start_screen->load_button.color = button_hover_color;
-		start_screen->load_button.text_color = text_hover_color;
+	if (checkMouse(start_screen->settings_button.x, start_screen->settings_button.y, start_screen->settings_button.w, start_screen->settings_button.h)){
+		start_screen->settings_button.color = button_hover_color;
+		start_screen->settings_button.text_color = text_hover_color;
 		if (left_click) return LOAD;
 	}
 	
-	render_button(renderer, start_screen->load_button, font);
+	render_button(renderer, start_screen->settings_button, font);
 	
 	start_screen->quit_button = (Button) {.x = 3*sw/8, .y = 3*sh/5, .w = sw/4, .h = sh/9, .color = button_color, .text_color = text_color, .text = " Quit"};
 	
@@ -106,9 +106,6 @@ Screen_State load_start_screen(SDL_Window *window, SDL_Renderer *renderer, TTF_F
 	}
 	
 	render_button(renderer, start_screen->quit_button, font);
-
-
-	// 2.3 Add button function
 }
 
 void free_start_screen(Start_Screen *start_screen) {
