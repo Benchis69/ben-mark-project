@@ -30,7 +30,7 @@ typedef enum {
 	QUIT
 }Screen_State;
 
-Screen_State load_start_screen(SDL_Window *window, SDL_Renderer *renderer, TTF_Font *font, Start_Screen *start_screen, bool left_click);
+Screen_State load_start_screen(SDL_Window *window, SDL_Renderer *renderer, TTF_Font *font, Start_Screen *start_screen, bool *left_click);
 void free_start_screen(Start_Screen *start_screen);
 
 

@@ -46,9 +46,20 @@ static bool checkMouse(float x, float y, float w, float h){
 	return false;
 }
 
+bool checkMousePressed(int x, int y, int w, int h, bool *left_click) {
+
+        if (checkMouse(x, y, w, h)) {
+                if (left_click) {
+                        left_click = false;
+                        return true;
+                }
+        }
+
+        return false;
+}
 
 
-Screen_State load_start_screen(SDL_Window *window, SDL_Renderer *renderer, TTF_Font *font, Start_Screen *start_screen, bool left_click) {
+Screen_State load_start_screen(SDL_Window *window, SDL_Renderer *renderer, TTF_Font *font, Start_Screen *start_screen, bool *left_click) {
 
 	// 1. Load background image (only once, the texture is kept in start_screen)
 
@@ -101,7 +112,11 @@ Screen_State load_start_screen(SDL_Window *window, SDL_Renderer *renderer, TTF_F
 	if (checkMouse(start_screen->quit_button.x, start_screen->quit_button.y, start_screen->quit_button.w, start_screen->quit_button.h)){
 		start_screen->quit_button.color = button_hover_color;
 		start_screen->quit_button.text_color = text_hover_color;
-		if (left_click) return QUIT;
+	}
+
+	if (checkMousePressed(start_screen->quit_button.x, start_screen->quit_button.x, start_screen->quit_button.w, start_screen->quit_button.h, left_click)) {
+		left_click = false;
+		return QUIT;
 	}
 	
 	render_button(renderer, start_screen->quit_button, font);
