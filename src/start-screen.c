@@ -89,7 +89,7 @@ Screen_State load_start_screen(SDL_Window *window, SDL_Renderer *renderer, TTF_F
 	if (checkMouse(start_screen->settings_button.x, start_screen->settings_button.y, start_screen->settings_button.w, start_screen->settings_button.h)){
 		start_screen->settings_button.color = button_hover_color;
 		start_screen->settings_button.text_color = text_hover_color;
-		if (left_click) return LOAD;
+		if (left_click) return SETTINGS;
 	}
 	
 	render_button(renderer, start_screen->settings_button, font);
