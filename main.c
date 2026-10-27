@@ -88,6 +88,7 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char **argv) {
 SDL_AppResult SDL_AppEvent(void *appstate, SDL_Event *event) {
 
 	Variables *vars	= (Variables *) appstate;
+	vars->left_click = false;
 
 	switch(event->type) {
 
