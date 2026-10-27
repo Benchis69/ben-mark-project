@@ -18,8 +18,8 @@ typedef struct {
 } Button;
 
 typedef struct {
-	Button start_button;
-	Button load_button;
+	Button play_button;
+	Button settings_button;
 	Button quit_button;
 	SDL_Texture *background;
 } Start_Screen;
