@@ -100,7 +100,7 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char **argv) {
 	if (!vars) return SDL_APP_FAILURE;
 	*appstate = vars;
 
-	if (!SDL_CreateWindowAndRenderer("2d Game", 1600, 900, SDL_WINDOW_RESIZABLE, &window, &renderer)) {
+	if (!SDL_CreateWindowAndRenderer("2d Game", 1600, 900, 0, &window, &renderer)) {
 		SDL_Log("Could not create window and renderer: %s\n", SDL_GetError());
 		return SDL_APP_FAILURE;	
 	}
