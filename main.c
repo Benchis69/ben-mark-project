@@ -8,6 +8,7 @@
 #include "./src/load-image.h"
 #include "./src/start-screen.h"
 #include "./src/load-menu.h"
+#include "./src/settings-menu.h"
 
 
 typedef struct {
@@ -28,6 +29,7 @@ typedef struct {
 
 	Start_Screen start_screen;
 	Load_Menu load_menu;
+	Settings_Menu settings_menu;
 
 	Font font;
 	bool left_click;
@@ -111,6 +113,7 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char **argv) {
 
 	vars->start_screen = (Start_Screen) {0};
 	vars->load_menu = (Load_Menu) {0};
+	vars->settings_menu = (Settings_Menu) {0};
 	vars->screen_state = START;
 
 	if (!load_font_from_file(vars, "./fonts/Roboto_Mono/RobotoMono-VariableFont_wght.ttf", 20)) return SDL_APP_FAILURE;
@@ -178,7 +181,7 @@ SDL_AppResult SDL_AppIterate(void *appstate) {
 			vars->screen_state = load_load_menu(vars->renderer, vars->window, &vars->load_menu, vars->font.font, &vars->left_click);
 		} break;
 		case SETTINGS: {
-			return SDL_APP_SUCCESS;
+			vars->screen_state = load_settings_menu(vars->renderer, vars->window, &vars->settings_menu, vars->font.font, &vars->left_click);
 		} break;
 		case QUIT: {
 			return SDL_APP_SUCCESS;
@@ -204,6 +207,7 @@ void SDL_AppQuit(void *appstate, SDL_AppResult result) {
 	if (vars) {
 		free_start_screen(&vars->start_screen);
 		free_load_menu(&vars->load_menu);
+		free_settings_menu(&vars->settings_menu);
 		free(vars);
 	}
 }
