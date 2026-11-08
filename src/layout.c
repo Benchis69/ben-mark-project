@@ -42,7 +42,7 @@ SDL_FRect layout_anchor(SDL_FRect parent, Anchor anchor, float w, float h, float
         case ANCHOR_CENTER_BOTTOM: {
             rect.x = parent.x + (parent.w - w) / 2 - margin_x;
             rect.y = parent.y + parent.h - h - margin_y;
-        }
+        } break;
         case ANCHOR_CENTER: {
             rect.x = (parent.x + (parent.w - w) / 2) - margin_x;
             rect.y = (parent.y + (parent.h - h) / 2) - margin_y;

@@ -11,7 +11,7 @@
 
 Screen_State load_load_menu(SDL_Renderer *renderer, SDL_Window *window, Load_Menu *load_menu, TTF_Font *font, bool *left_click) {
 
-    if (!load_menu->background) {
+   if (!load_menu->background) {
         load_menu->background = load_ppm_texture("./images/load-menu-background.ppm", renderer);
         if (!load_menu->background) {
             SDL_Log("Could not load background image!");
@@ -33,7 +33,7 @@ Screen_State load_load_menu(SDL_Renderer *renderer, SDL_Window *window, Load_Men
 	SDL_Color button_color = {255, 255, 255, 200};
 	SDL_Color button_hover_color = {0, 0, 0, 255};
 	SDL_Color text_hover_color = {255, 255, 255, 255};
-	SDL_Color text_color = {255, 255, 255, 255};
+	SDL_Color text_color = {0, 0, 0, 255};
 
 
     //Draw empty Menu
@@ -53,7 +53,7 @@ Screen_State load_load_menu(SDL_Renderer *renderer, SDL_Window *window, Load_Men
 
     //Draw Back Button to return to Start Menu and New Button to create new Game
 
-    load_menu->back_button = (Button) {back_button_rect.x, back_button_rect.y, back_button_rect.w, back_button_rect.h, button_color, text_color};
+    load_menu->back_button = (Button) {back_button_rect.x, back_button_rect.y, back_button_rect.w, back_button_rect.h, button_color, text_color, "Back"};
 
     if (checkMouse(load_menu->back_button.x, load_menu->back_button.y, load_menu->back_button.w, load_menu->back_button.h)){
 		load_menu->back_button.color = button_hover_color;
@@ -66,7 +66,7 @@ Screen_State load_load_menu(SDL_Renderer *renderer, SDL_Window *window, Load_Men
 
 	render_button(renderer, load_menu->back_button, font);
 
-	load_menu->create_new_button = (Button) {create_new_button_rect.x, create_new_button_rect.y, create_new_button_rect.w, create_new_button_rect.h, button_color, text_color};
+	load_menu->create_new_button = (Button) {create_new_button_rect.x, create_new_button_rect.y, create_new_button_rect.w, create_new_button_rect.h, button_color, text_color, "New Game"};
 
 	 if (checkMouse(load_menu->create_new_button.x, load_menu->create_new_button.y, load_menu->create_new_button.w, load_menu->create_new_button.h)){
 		load_menu->create_new_button.color = button_hover_color;

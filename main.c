@@ -78,6 +78,9 @@ bool init_music(void *appstate, char *file_path, SDL_AudioSpec spec) {
 
 SDL_AppResult SDL_AppInit(void **appstate, int argc, char **argv) {
 
+	(void) argc;
+	(void) argv;
+
 	SDL_AudioSpec spec =  {SDL_AUDIO_S16, 2, 44100};
 
 	if (!SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO)) {
@@ -180,6 +183,12 @@ SDL_AppResult SDL_AppIterate(void *appstate) {
 		case QUIT: {
 			return SDL_APP_SUCCESS;
 		} break;
+		case NEW_GAME: {
+			return SDL_APP_CONTINUE;
+		} break;
+		case ERROR: {
+			return SDL_APP_CONTINUE;
+		} break;
 	}
 	SDL_RenderPresent(vars->renderer);
 
@@ -187,6 +196,8 @@ SDL_AppResult SDL_AppIterate(void *appstate) {
 }
 
 void SDL_AppQuit(void *appstate, SDL_AppResult result) {
+
+	(void) result;
 
 	Variables *vars = (Variables *) appstate;
 
