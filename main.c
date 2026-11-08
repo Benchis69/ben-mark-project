@@ -166,21 +166,21 @@ SDL_AppResult SDL_AppIterate(void *appstate) {
 	SDL_RenderClear(vars->renderer);
 
 
+
 	switch (vars->screen_state) {
 		case START: {
 			vars->screen_state = load_start_screen(vars->window, vars->renderer, vars->font.font, &vars->start_screen, &vars->left_click);
 		} break;
 		case PLAY: {
-			vars->screen_state = loadLoadMenu(vars->renderer, vars->window, &vars->load_menu, vars->font.font);
+			vars->screen_state = load_load_menu(vars->renderer, vars->window, &vars->load_menu, vars->font.font, &vars->left_click);
 		} break;
 		case SETTINGS: {
-			//TODO
+			return SDL_APP_SUCCESS;
 		} break;
 		case QUIT: {
 			return SDL_APP_SUCCESS;
 		} break;
 	}
-
 	SDL_RenderPresent(vars->renderer);
 
 	return SDL_APP_CONTINUE;

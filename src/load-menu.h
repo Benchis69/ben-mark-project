@@ -3,7 +3,9 @@
 #include <SDL3/SDL.h>
 #include <stdlib.h>
 #include <SDL3_ttf/SDL_ttf.h>
+#include "layout.h"
 #include "start-screen.h"
+#include "mouse-click-logic.h"
 
 typedef struct {
     SDL_FRect rect;
@@ -20,7 +22,7 @@ typedef struct {
     //TODO;
 } Save_State;
 
-Screen_State loadLoadMenu(SDL_Renderer *renderer, SDL_Window *window, Load_Menu *load_menu, TTF_Font *font);
+Screen_State load_load_menu(SDL_Renderer *renderer, SDL_Window *window, Load_Menu *load_menu, TTF_Font *font, bool *left_click);
 void free_load_menu(Load_Menu *load_menu);
 
 #endif

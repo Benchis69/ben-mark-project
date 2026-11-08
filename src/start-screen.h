@@ -3,6 +3,7 @@
 #include <SDL3/SDL.h>
 #include <stdlib.h>
 #include <SDL3_ttf/SDL_ttf.h>
+#include "layout.h"
 
 
 typedef struct {
@@ -29,6 +30,7 @@ typedef enum {
 	PLAY,
 	SETTINGS,
 	QUIT,
+	NEW_GAME,
 	ERROR
 }Screen_State;
 

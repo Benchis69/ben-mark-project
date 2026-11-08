@@ -14,6 +14,11 @@ add_executable(main
     src/start-screen.c
         src/load-menu.c
         src/load-menu.h
+        src/mouse-click-logic.c
+        src/mouse-click-logic.h
+        src/layout.c
+        src/layout.h
+        src/layout.c
 )
 
 target_compile_options(main PRIVATE -Wall -Wextra)
