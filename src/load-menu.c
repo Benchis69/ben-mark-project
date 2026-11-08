@@ -30,7 +30,7 @@ Screen_State load_load_menu(SDL_Renderer *renderer, SDL_Window *window, Load_Men
     //Set color for Menu and for Buttons
 
     load_menu->menu_color = (SDL_Color){0, 0, 0, 128};
-	SDL_Color button_color = {255, 255, 255, 200};
+	SDL_Color button_color = {255, 255, 255, 255};
 	SDL_Color button_hover_color = {0, 0, 0, 255};
 	SDL_Color text_hover_color = {255, 255, 255, 255};
 	SDL_Color text_color = {0, 0, 0, 255};
@@ -41,10 +41,10 @@ Screen_State load_load_menu(SDL_Renderer *renderer, SDL_Window *window, Load_Men
     int sw, sh;
     SDL_GetWindowSize(window, &sw, &sh);
 
-	load_menu->rect = layout_anchor(bck_rect, ANCHOR_CENTER_TOP, sw/3, 2*sh/3, 0, sh/5);
-	SDL_FRect bound = layout_anchor(bck_rect, ANCHOR_TOP_LEFT, sw/3, 2.5*sh/3, 0, sh/5);
-	SDL_FRect back_button_rect = layout_anchor(bound, ANCHOR_BOTTOM_LEFT, sw/4, sh/9, 0, 0);
-	SDL_FRect create_new_button_rect = layout_anchor(bound, ANCHOR_BOTTOM_RIGHT, sw/4, sh/9, 0, 0);
+	load_menu->rect = layout_anchor(bck_rect, ANCHOR_CENTER_TOP, sw/3, 2*sh/3, 0, sh/7);
+	SDL_FRect bound = layout_anchor(bck_rect, ANCHOR_CENTER_TOP, sw/3, 2.5*sh/3, 0, sh/7);
+	SDL_FRect back_button_rect = layout_anchor(bound, ANCHOR_BOTTOM_LEFT, sw/7, sh/9, 0, 0);
+	SDL_FRect create_new_button_rect = layout_anchor(bound, ANCHOR_BOTTOM_RIGHT, sw/7, sh/9, 0, 0);
 
     SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
     SDL_SetRenderDrawColor(renderer, load_menu->menu_color.r, load_menu->menu_color.g, load_menu->menu_color.b, load_menu->menu_color.a);
@@ -76,6 +76,8 @@ Screen_State load_load_menu(SDL_Renderer *renderer, SDL_Window *window, Load_Men
 			return NEW_GAME;
 		}
 	 }
+
+	render_button(renderer, load_menu->create_new_button, font);
 
 
     //TODO Add save state and stuff
