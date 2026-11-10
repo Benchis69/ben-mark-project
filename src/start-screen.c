@@ -1,13 +1,15 @@
 #include "start-screen.h"
-#include <SDL3/SDL.h>
-#include <SDL3_ttf/SDL_ttf.h>
 #include "load-image.h"
-#include <stdlib.h>
 #include "mouse-click-logic.h"
 #include "layout.h"
 #include "start-screen.h"
 
-static void render_text(SDL_Renderer *renderer, TTF_Font *font, const char *text, float x, float y, SDL_Color color, float scale) {
+#include <SDL3/SDL.h>
+#include <SDL3_ttf/SDL_ttf.h>
+#include <stdlib.h>
+#include <string.h>
+
+void render_text(SDL_Renderer *renderer, TTF_Font *font, const char *text, float x, float y, SDL_Color color, float scale) {
 	
 	if (text == NULL || text[0] == '\0') return;
 
@@ -30,16 +32,12 @@ void render_button(SDL_Renderer *renderer, Button button, TTF_Font *font) {
 	
 	SDL_FRect rect = {button.x, button.y, button.w, button.h};
 	int text_w, text_h;
-	TTF_GetStringSize(font, button.text, sizeof(button.text), &text_w, &text_h);
+	TTF_GetStringSize(font, button.text, strlen(button.text), &text_w, &text_h);
 
 	SDL_SetRenderDrawColor(renderer, button.color.r, button.color.g, button.color.b, button.color.a);
 	SDL_RenderFillRect(renderer, &rect);
-	render_text(renderer, font, button.text, button.x + (button.w - text_w) / 2, button.y + (button.h - text_h) / 2, button.text_color, 1.0f);
+	render_text(renderer, font, button.text, button.x + (button.w - text_w) / 2.0f, button.y + (button.h - text_h) / 2.0f, button.text_color, 1.0f);
 }
-
-
-// check if mouse is on button
-
 
 Screen_State load_start_screen(SDL_Window *window, SDL_Renderer *renderer, TTF_Font *font, Start_Screen *start_screen, bool *left_click) {
 
@@ -73,7 +71,7 @@ Screen_State load_start_screen(SDL_Window *window, SDL_Renderer *renderer, TTF_F
 	SDL_FRect settings_button_rect =  layout_anchor((SDL_FRect){0, 0, sw, sh}, ANCHOR_CENTER_TOP, sw/4, sh/9, 0.0, 2*sh/5);
 	SDL_FRect quit_button_rect = layout_anchor((SDL_FRect){0, 0, sw, sh}, ANCHOR_CENTER_TOP, sw/4, sh/9, 0.0, 3*sh/5);
 
-	start_screen->play_button = (Button) {play_button_rect.x, play_button_rect.y, play_button_rect.w, play_button_rect.h, .color = button_color, .text_color = text_color, .text = " Play"};
+	start_screen->play_button = (Button) {play_button_rect.x, play_button_rect.y, play_button_rect.w, play_button_rect.h, .color = button_color, .text_color = text_color, .text = "Play"};
 	
 	if (checkMouse(start_screen->play_button.x, start_screen->play_button.y, start_screen->play_button.w, start_screen->play_button.h)){
 		start_screen->play_button.color = button_hover_color;
@@ -99,7 +97,7 @@ Screen_State load_start_screen(SDL_Window *window, SDL_Renderer *renderer, TTF_F
 	
 	render_button(renderer, start_screen->settings_button, font);
 	
-	start_screen->quit_button = (Button) {quit_button_rect.x, quit_button_rect.y, quit_button_rect.w, quit_button_rect.h, .color = button_color, .text_color = text_color, .text = " Quit"};
+	start_screen->quit_button = (Button) {quit_button_rect.x, quit_button_rect.y, quit_button_rect.w, quit_button_rect.h, .color = button_color, .text_color = text_color, .text = "Quit"};
 	
 	if (checkMouse(start_screen->quit_button.x, start_screen->quit_button.y, start_screen->quit_button.w, start_screen->quit_button.h)){
 		start_screen->quit_button.color = button_hover_color;
