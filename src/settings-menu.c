@@ -7,9 +7,22 @@
 
 #include <SDL3/SDL.h>
 #include <stdlib.h>
+#include <stdio.h>
 #include <SDL3_ttf/SDL_ttf.h>
 #include <string.h>
+#include <math.h>
 
+static void update_slider(Slider *slider) {
+   
+    float mx, my;
+    SDL_MouseButtonFlags buttons = SDL_GetMouseState(&mx, &my);
+    bool held = (buttons & SDL_BUTTON_LMASK) != 0;
+
+    if (!held) slider->dragging = false;
+    else if (checkMouse(slider->x, slider->y, slider->w, slider->h)) slider->dragging = true;
+
+    if (slider->dragging) slider->value = SDL_clamp((mx - slider->x) / slider->w, 0.0f, 1.0f);
+}
 
 Screen_State load_settings_menu(SDL_Renderer *renderer, SDL_Window *window, Settings_Menu *settings_menu, TTF_Font *font, TTF_Font *header_font, bool *left_click) {
 
@@ -47,6 +60,8 @@ Screen_State load_settings_menu(SDL_Renderer *renderer, SDL_Window *window, Sett
 	SDL_FRect bound = layout_anchor(bck_rect, ANCHOR_CENTER_TOP, sw/2, 2.5*sh/3, 0, sh/7);
 	SDL_FRect back_button_rect = layout_anchor(bound, ANCHOR_CENTER_BOTTOM, sw/7, sh/9, 0, 0);
     SDL_FRect volume_button_rect = layout_anchor(bound, ANCHOR_TOP_LEFT, 100, 30, 10, 10);
+    SDL_FRect volume_percentage_rect = layout_anchor(bound, ANCHOR_TOP_LEFT, 100, 30, volume_button_rect.w + 10, 10);
+    SDL_FRect volume_slider_bound_rect = layout_anchor(bound, ANCHOR_TOP_RIGHT, 500, 30, 10, 10);
 
 	SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
 	SDL_SetRenderDrawColor(renderer, settings_menu->menu_color.r, settings_menu->menu_color.g, settings_menu->menu_color.b, settings_menu->menu_color.a);
@@ -85,8 +100,43 @@ Screen_State load_settings_menu(SDL_Renderer *renderer, SDL_Window *window, Sett
     // Draw actuall settings menu
 
     {
-        settings_menu->volume_button = (Button) {volume_button_rect.x, volume_button_rect.y, volume_button_rect.w, volume_button_rect.h, button_color, text_color, "Volume"};
-        render_button(renderer, settings_menu->volume_button, font);
+        // Volume slider
+
+        {
+            settings_menu->settings_buttons[0] = (Button) {volume_button_rect.x, volume_button_rect.y, volume_button_rect.w, volume_button_rect.h, button_color, text_color, "Volume"};
+            render_button(renderer, settings_menu->settings_buttons[0], font);
+
+            Slider *s = &settings_menu->vol_slider;
+            s->x = volume_slider_bound_rect.x;
+            s->y = volume_slider_bound_rect.y;
+            s->w = volume_slider_bound_rect.w;
+            s->h = volume_slider_bound_rect.h;
+
+            update_slider(s);
+
+            SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);        
+            SDL_RenderFillRect(renderer, &volume_slider_bound_rect);
+
+            float knob_w = 10.0f;
+            SDL_FRect knob = {s->x + s->value * s->w - knob_w / 2, s->y, knob_w, s->h};
+            SDL_SetRenderDrawColor(renderer, s->color.r,s->color.g, s->color.b, s->color.a);
+            SDL_RenderFillRect(renderer, &knob); 
+
+            // Draw volume percentage
+
+            int vol_percent = (int) floor(s->value * 100);
+            char percentage[20];
+            snprintf(percentage, 100, "%d", vol_percent);
+            char tmp[2];
+            tmp[0] = '%';
+            tmp[1] = 0;
+            strcat(percentage, tmp);
+
+            settings_menu->settings_buttons[1] = (Button) {volume_percentage_rect.x, volume_percentage_rect.y, volume_percentage_rect.w, volume_percentage_rect.h, button_color, text_color, percentage};
+            render_button(renderer, settings_menu->settings_buttons[1], font);
+
+        }
+
     }
 
 	return SETTINGS;	

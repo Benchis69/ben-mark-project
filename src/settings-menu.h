@@ -4,10 +4,23 @@
 #include <SDL3/SDL.h>
 #include "start-screen.h"
 
+#define SETTINGS_BUTTONS_AMOUNT 5
+
+typedef struct {
+    float x, y, w, h;
+    float value;
+    bool dragging;
+    SDL_Color color;
+} Slider;
+
 typedef struct {
 	SDL_FRect settings_rect;
+
 	Button back_button;
-    Button volume_button;
+    Button settings_buttons[SETTINGS_BUTTONS_AMOUNT];
+
+    Slider vol_slider;
+
 	SDL_Color menu_color;
 	SDL_Texture *background;
 } Settings_Menu;

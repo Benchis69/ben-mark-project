@@ -114,6 +114,8 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char **argv) {
 	vars->start_screen = (Start_Screen) {0};
 	vars->load_menu = (Load_Menu) {0};
 	vars->settings_menu = (Settings_Menu) {0};
+    vars->settings_menu.vol_slider.value = 0.5f;
+    vars->settings_menu.vol_slider.color = (SDL_Color) {30, 50, 50, 255};
 	vars->screen_state = START;
 
 	if (!load_font_from_file(&vars->font, "./fonts/Roboto_Mono/RobotoMono-VariableFont_wght.ttf", 20)) return SDL_APP_FAILURE;
@@ -148,7 +150,7 @@ SDL_AppResult SDL_AppEvent(void *appstate, SDL_Event *event) {
 		case SDL_EVENT_QUIT: {
 			return SDL_APP_SUCCESS;
 		} break;
-		case SDL_EVENT_MOUSE_BUTTON_DOWN: {
+		case SDL_EVENT_MOUSE_BUTTON_UP: {
 			if (event->button.button == SDL_BUTTON_LEFT){
 				vars->left_click = true;
 			}
@@ -168,6 +170,11 @@ SDL_AppResult SDL_AppIterate(void *appstate) {
 	        // feed more data to the stream. It will queue at the end, and trickle out as the hardware needs more data.
 		SDL_PutAudioStreamData(vars->stream, vars->start_screen_music.wav_data, vars->start_screen_music.wav_data_len);
 	}
+    
+    if (!SDL_SetAudioStreamGain(vars->stream, vars->settings_menu.vol_slider.value)) {
+        SDL_Log("Could not raise / lower volume: %s\n", SDL_GetError());
+        return SDL_APP_FAILURE;
+    }
 
 	SDL_SetRenderDrawColor(vars->renderer, 30, 30, 30, 255);
 	SDL_RenderClear(vars->renderer);
